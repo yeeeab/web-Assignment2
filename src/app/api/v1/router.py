@@ -10,8 +10,8 @@ from .admin import router as admin
 from .stats import router as stats
 from .users import router as users
 
-router.include_router(users, tags=["users"])
 router = APIRouter(prefix="/api/v1")
+router.include_router(users, tags=["users"])
 router.include_router(health, tags=["health"])
 router.include_router(auth, tags=["auth"])
 router.include_router(items, tags=["items"])

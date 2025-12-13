@@ -1,0 +1,1173 @@
+{
+	"info": {
+		"_postman_id": "9f898a31-91c8-47d7-ab35-d0b5234885c6",
+		"name": "auction",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49640207",
+		"_collection_link": "https://seayb0595-576926.postman.co/workspace/9's-Workspace~99820461-c4cd-4f21-818f-3d5e841ee6e8/collection/49640207-9f898a31-91c8-47d7-ab35-d0b5234885c6?action=share&source=collection_link&creator=49640207"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });",
+									"pm.test('has status ok', function () {",
+									"  const json = pm.response.json();",
+									"  pm.expect(json).to.have.property('status');",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiRoot}}/health",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200 or 409', function () {",
+									"  pm.expect([200, 409]).to.include(pm.response.code);",
+									"});",
+									"if (pm.response.code === 200) {",
+									"  const json = pm.response.json();",
+									"  if (json.accessToken) pm.collectionVariables.set('accessToken', json.accessToken);",
+									"  if (json.refreshToken) pm.collectionVariables.set('refreshToken', json.refreshToken);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\",\n  \"nickname\": \"{{userNickname}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/auth/register",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });",
+									"const json = pm.response.json();",
+									"pm.test('has accessToken', function () { pm.expect(json).to.have.property('accessToken'); });",
+									"pm.collectionVariables.set('accessToken', json.accessToken);",
+									"pm.collectionVariables.set('refreshToken', json.refreshToken);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{userEmail}}\",\n  \"password\": \"{{userPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/auth/login",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('status 200', function () { pm.response.to.have.status(200); });",
+									"const json = pm.response.json();",
+									"pm.collectionVariables.set('accessToken', json.accessToken);",
+									"pm.collectionVariables.set('refreshToken', json.refreshToken);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/auth/refresh",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/auth/logout",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/users/me",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Me",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nickname\": \"{{userNickname}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/users/me",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"{{userPassword}}\",\n  \"newPassword\": \"{{userPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/users/me/password",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My Bids",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/users/me/bids?page=0&size=20&sort=createdAt,DESC",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"bids"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "createdAt,DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/users/{{userId}}",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"users",
+								"{{userId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Items",
+			"item": [
+				{
+					"name": "Create Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"categoryId\": {{categoryId}},\n  \"title\": \"Sample Item\",\n  \"description\": \"Sample description\",\n  \"startPrice\": 1000,\n  \"bidUnit\": 100\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/items",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiRoot}}/items?page=0&size=20&sort=createdAt,DESC",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "createdAt,DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Item",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Item",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Title\"\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Item",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publish Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}/publish",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Close Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}/close",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}",
+								"close"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Winner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}/winner",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}",
+								"winner"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bids",
+			"item": [
+				{
+					"name": "Place Bid",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": 1200\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}/bids",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}",
+								"bids"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Bids",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}/bids?page=0&size=20&sort=amount,DESC",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}",
+								"bids"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "amount,DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Highest Bid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}/bids/highest",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}",
+								"bids",
+								"highest"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "List Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiRoot}}/categories",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Electronics\"\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/categories",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Category\"\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/categories/{{categoryId}}",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"categories",
+								"{{categoryId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/categories/{{categoryId}}",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"categories",
+								"{{categoryId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Watches",
+			"item": [
+				{
+					"name": "Watch Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}/watch",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}",
+								"watch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unwatch Item",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}/watch",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}",
+								"watch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "My Watches",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/users/me/watches",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"watches"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": \"Seoul, Korea\"\n}"
+						},
+						"url": {
+							"raw": "{{apiRoot}}/items/{{itemId}}/orders",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"items",
+								"{{itemId}}",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List My Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/orders?page=0&size=20&sort=createdAt,DESC",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "createdAt,DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/orders/{{orderId}}",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"orders",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/orders/{{orderId}}/cancel",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"orders",
+								"{{orderId}}",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Admin List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/admin/users?page=0&size=20&sort=createdAt,DESC",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"admin",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "createdAt,DESC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Deactivate User",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/admin/users/{{userId}}/deactivate",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"admin",
+								"users",
+								"{{userId}}",
+								"deactivate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Force Close Item",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/admin/items/{{itemId}}/force-close",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"admin",
+								"items",
+								"{{itemId}}",
+								"force-close"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Stats",
+			"item": [
+				{
+					"name": "Top Bid Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apiRoot}}/stats/items/top-bid-count?limit=10",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"stats",
+								"items",
+								"top-bid-count"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Daily Sales",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{apiRoot}}/stats/sales/daily?days=7",
+							"host": [
+								"{{apiRoot}}"
+							],
+							"path": [
+								"stats",
+								"sales",
+								"daily"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://113.198.66.75:10052",
+			"type": "string"
+		},
+		{
+			"key": "apiRoot",
+			"value": "{{baseUrl}}/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userEmail",
+			"value": "user1@example.com",
+			"type": "string"
+		},
+		{
+			"key": "userPassword",
+			"value": "P@ssw0rd!",
+			"type": "string"
+		},
+		{
+			"key": "userNickname",
+			"value": "user1",
+			"type": "string"
+		},
+		{
+			"key": "adminEmail",
+			"value": "admin@example.com",
+			"type": "string"
+		},
+		{
+			"key": "adminPassword",
+			"value": "P@ssw0rd!",
+			"type": "string"
+		},
+		{
+			"key": "categoryId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "itemId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "orderId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}
